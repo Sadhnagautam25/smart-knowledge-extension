@@ -1,10 +1,12 @@
 const saveBtn = document.getElementById("saveBtn");
 const status = document.getElementById("status");
 
-// ✅ clean token getter
-async function getToken() {
-  const result = await chrome.storage.local.get("token");
-  return result.token || null;
+function getToken() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["token"], (res) => {
+      resolve(res.token || null);
+    });
+  });
 }
 
 saveBtn.addEventListener("click", async () => {
@@ -12,62 +14,71 @@ saveBtn.addEventListener("click", async () => {
   saveBtn.disabled = true;
   saveBtn.innerHTML = 'Saving... <span class="spinner"></span>';
   status.innerText = "";
-  status.className = "";
+  status.className = ""; // Reset classes
 
   try {
     const token = await getToken();
-
-    console.log("Token in popup:", token); // 🔥 DEBUG
 
     if (!token) {
       throw new Error("Login required in extension");
     }
 
-    const tabs = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+      try {
+        const tab = tabs?.[0];
 
-    const tab = tabs?.[0];
+        if (!tab?.url) {
+          throw new Error("No active tab found");
+        }
 
-    if (!tab?.url) {
-      throw new Error("No active tab found");
-    }
+        const response = await fetch(
+          "https://smart-knowladge-brain-app.onrender.com/api/bookmark",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              url: tab.url,
+              title: tab.title,
+            }),
+          },
+        );
 
-    const response = await fetch(
-      "https://smart-knowladge-brain-app.onrender.com/api/bookmark",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          url: tab.url,
-          title: tab.title,
-        }),
+        if (!response.ok) {
+          let errorMessage = "Something went wrong";
+
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+          } catch (e) {
+            // agar JSON parse fail ho jaye
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        // --- Success State ---
+        status.innerText = "Bookmark Saved Successfully ✅";
+        status.classList.add("status-success");
+        saveBtn.innerText = "Done";
+
+        // Optional: Close popup automatically after success
+        setTimeout(() => window.close(), 2000);
+      } catch (err) {
+        // --- Inner Catch Error ---
+        status.innerText = err.message;
+        status.classList.add("status-error");
+        saveBtn.disabled = false;
+        saveBtn.innerText = "Try Again";
       }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Something went wrong");
-    }
-
-    // --- Success ---
-    status.innerText = "Bookmark Saved Successfully ✅";
-    status.classList.add("status-success");
-    saveBtn.innerText = "Done";
-
-    setTimeout(() => window.close(), 1500);
+    });
   } catch (err) {
-    console.error("Error:", err);
-
+    // --- Outer Catch Error ---
     status.innerText = err.message;
     status.classList.add("status-error");
-
     saveBtn.disabled = false;
-    saveBtn.innerText = "Try Again";
+    saveBtn.innerText = "Retry";
   }
 });
