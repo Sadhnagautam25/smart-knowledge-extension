@@ -1,0 +1,175 @@
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent: #200038;
+  --accent-glow: rgba(170, 0, 255, 0.4);
+  --text-main: #ffffff;
+  --text-dim: #b2bec3;
+}
+
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  margin: 0;
+  padding: 15px;
+  width: 260px;
+  background-color: #0f111a; /* Deep Dark Base */
+  color: var(--text-main);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Background Glow Effects */
+.glow-1,
+.glow-2 {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: -1;
+}
+.glow-1 {
+  top: -20px;
+  right: -20px;
+  background: #6c5ce7;
+}
+.glow-2 {
+  bottom: -20px;
+  left: -20px;
+  background: var(--accent);
+}
+
+/* Glass Card */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px); /* Frosty Glass Effect */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  overflow: hidden;
+}
+
+.header {
+  padding: 20px 0 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.icon-box {
+  font-size: 28px;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.content {
+  padding: 20px;
+  text-align: center;
+}
+
+.description {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Glassy Button */
+#saveBtn {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(170, 170, 170, 0.2),
+    rgba(198, 198, 198, 0.2)
+  );
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+#saveBtn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(93, 93, 93, 0.4),
+    rgba(85, 84, 85, 0.4)
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--accent-glow);
+  border-color: var(--accent);
+}
+
+#saveBtn:active {
+  transform: scale(0.98);
+}
+
+#saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#status {
+  margin-top: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  min-height: 18px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* ✅ Success */
+.status-success {
+  color: #4cd137;
+  background: rgba(76, 209, 55, 0.1);
+  border: 1px solid rgba(76, 209, 55, 0.3);
+  box-shadow: 0 0 8px rgba(76, 209, 55, 0.2);
+}
+
+/* ❌ Error */
+.status-error {
+  color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.1);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  box-shadow: 0 0 8px rgba(255, 77, 79, 0.2);
+  animation: shake 0.3s ease;
+}
+
+/* 🔥 Shake animation */
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
