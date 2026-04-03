@@ -31,17 +31,21 @@ saveBtn.addEventListener("click", async () => {
           throw new Error("No active tab found");
         }
 
-        const response = await fetch("https://smart-knowladge-brain-app.onrender.com/api/bookmark", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          "https://smart-knowladge-brain-app.onrender.com/api/bookmark",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              url: tab.url,
+              title: tab.title,
+            }),
           },
-          body: JSON.stringify({
-            url: tab.url,
-            title: tab.title,
-          }),
-        });
+        );
 
         if (!response.ok) {
           let errorMessage = "Something went wrong";
