@@ -5,13 +5,18 @@
 
   "permissions": ["storage", "tabs", "activeTab"],
 
-  "host_permissions": [
-    "https://smart-knowladge-brain-app.onrender.com/*"
-  ],
+  "host_permissions": ["https://smart-knowladge-brain-app.onrender.com/*"],
 
   "background": {
     "service_worker": "background.js"
   },
+
+  "content_scripts": [
+    {
+      "matches": ["https://smart-knowladge-brain-app.onrender.com/*"],
+      "js": ["content.js"]
+    }
+  ],
 
   "action": {
     "default_popup": "popup.html",

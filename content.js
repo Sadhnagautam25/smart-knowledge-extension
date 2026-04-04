@@ -1,18 +1,24 @@
 console.log("Content script loaded");
 
 function sendTokenToExtension() {
-  const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    chrome.runtime.sendMessage({
-      type: "STORE_TOKEN",
-      token: token,
-    });
+    console.log("Checking token:", token);
+
+    if (token) {
+      chrome.runtime.sendMessage({
+        type: "STORE_TOKEN",
+        token: token,
+      });
+    }
+  } catch (err) {
+    console.log("Error reading token", err);
   }
 }
 
-// run on load
+// run immediately
 sendTokenToExtension();
 
-// also watch changes
-setInterval(sendTokenToExtension, 2000);
+// safer interval (increase stability)
+setInterval(sendTokenToExtension, 5000);
