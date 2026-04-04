@@ -4,6 +4,7 @@ const status = document.getElementById("status");
 function getToken() {
   return new Promise((resolve) => {
     chrome.storage.local.get(["token"], (res) => {
+      console.log("TOKEN FROM STORAGE:", res.token);
       resolve(res.token || null);
     });
   });
